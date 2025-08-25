@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class OwnersAppConfig(AppConfig):
+class OrdersAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'owners_app'
+    name = 'orders_app'
