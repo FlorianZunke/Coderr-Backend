@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 from auth_app.models import CustomUser
+from profiles_app.models import Profile
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -37,6 +38,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         )
         account.set_password(pw)
         account.save()
+        Profile.objects.create(user=account) 
         return account
     
 
