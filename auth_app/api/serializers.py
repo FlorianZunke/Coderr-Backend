@@ -7,6 +7,10 @@ from profiles_app.models import Profile
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for user registration.
+    """
     repeated_password = serializers.CharField(write_only=True)
     username = serializers.CharField(max_length=150, required=True)
 
@@ -23,6 +27,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
 
     def save(self, **kwargs):
+
+        """
+        Save the user account.
+        """
         pw = self.validated_data['password']
         repeated_pw = self.validated_data['repeated_password']
 
@@ -35,6 +43,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         account = CustomUser(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
+            type=self.validated_data['type'],
         )
         account.set_password(pw)
         account.save()
@@ -43,10 +52,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
 
 class CustomLoginSerializer(serializers.Serializer):
+
+    """
+    Serializer for user login.
+    """
     username = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):
+        """
+        Validate user credentials.
+        """
         user = authenticate(username=data['username'], password=data['password'])
         if user is None:
             raise serializers.ValidationError("Invalid credentials")

@@ -10,13 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "type"]
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    username = serializers.CharField(source="user.username", read_only=True)
-    first_name = serializers.CharField(source="user.first_name", allow_blank=True, default="")
-    last_name = serializers.CharField(source="user.last_name", allow_blank=True, default="")
-    type = serializers.CharField(source="user.type", read_only=True)
-    email = serializers.EmailField(source="user.email", read_only=True)
-    created_at = serializers.DateTimeField(source="user.date_joined", read_only=True)
+    username = serializers.CharField(read_only=True)
 
     class Meta:
         model = Profile
@@ -33,4 +27,42 @@ class ProfileSerializer(serializers.ModelSerializer):
             "type",
             "email",
             "created_at",
+        ]
+
+class BusinessSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)  
+    type = serializers.CharField(source='user.type', read_only=True)
+    class Meta:
+        model = Profile
+        fields = [
+            "user",
+            "username",
+            "first_name",
+            "last_name",
+            "file",
+            "location",
+            "tel",
+            "description",
+            "working_hours",
+            "type",
+        ]
+
+class CustomerSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    type = serializers.CharField(source='user.type', read_only=True)
+    uploaded_at = serializers.DateTimeField(read_only=True)
+    class Meta:
+        model = Profile
+        fields = [
+            "user",
+            "username",
+            "first_name",
+            "last_name",
+            "file",
+            "uploaded_at",
+            "type",
         ]

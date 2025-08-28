@@ -9,9 +9,15 @@ from .serializers import RegistrationSerializer, CustomLoginSerializer
 
 
 class RegistrationView(APIView):
+        """
+        View for user registration.
+        """
         permission_classes = [AllowAny]
         
         def post(self, request, *args, **kwargs):
+                """
+                Handle user registration.
+                """
                 serializer = RegistrationSerializer(data=request.data)
 
                 if serializer.is_valid():
@@ -29,10 +35,16 @@ class RegistrationView(APIView):
 
 
 class CustomLoginView(ObtainAuthToken):
+    """
+    View for user login.
+    """
     permission_classes = [AllowAny]
     serializer_class = CustomLoginSerializer
 
     def post(self, request):
+        """
+        Handle user login.
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
