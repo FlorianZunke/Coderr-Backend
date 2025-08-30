@@ -1,3 +1,39 @@
 from django.db import models
 
-# Create your models here.
+class Offer(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.FileField(upload_to='offers/images/', null=True, blank=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='offers')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def min_price(self):
+        return self.details.aggregate(models.Min("price"))["price__min"]
+
+    @property
+    def min_delivery_time(self):
+        return self.details.aggregate(models.Min("delivery_time_in_days"))["delivery_time_in_days__min"]
+
+
+class OfferDetail(models.Model):
+    OFFER_TYPES = [
+        ("basic", "Basic"),
+        ("standard", "Standard"),
+        ("premium", "Premium"),
+    ]
+    
+    offer = models.ForeignKey(Offer, on_delete=models.CASCADE, related_name="details")
+    title = models.CharField(max_length=255)
+    revisions = models.IntegerField()
+    delivery_time_in_days = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    features = models.JSONField(default=list)  # Liste von Strings
+    offer_type = models.CharField(max_length=50, choices=OFFER_TYPES)
+
+    def __str__(self):
+        return f"{self.offer.title} - {self.title}"
