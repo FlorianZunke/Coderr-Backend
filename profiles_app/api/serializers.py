@@ -15,7 +15,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
     username = serializers.CharField(read_only=True)
     first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')  
+    last_name = serializers.CharField(source='user.last_name')
     type = serializers.CharField(source='user.type', read_only=True)
     email = serializers.EmailField(source='user.email')
     created_at = serializers.DateTimeField(read_only=True)
@@ -48,17 +48,20 @@ class ProfileSerializer(serializers.ModelSerializer):
             user.last_name = user_data.get('last_name', user.last_name)
             user.email = user_data.get('email', user.email)
             user.save()
-        instance.save()
+            instance.save()
         return instance
+
 
 class BusinessSerializer(serializers.ModelSerializer):
     """
     Serializer for business profiles.
     """
     username = serializers.CharField(read_only=True)
-    first_name = serializers.CharField(source='user.first_name', read_only=True)
-    last_name = serializers.CharField(source='user.last_name', read_only=True)  
+    first_name = serializers.CharField(
+        source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
     type = serializers.CharField(source='user.type', read_only=True)
+
     class Meta:
         model = Profile
         fields = [
@@ -74,15 +77,18 @@ class BusinessSerializer(serializers.ModelSerializer):
             "type",
         ]
 
+
 class CustomerSerializer(serializers.ModelSerializer):
     """
     Serializer for customer profiles.
     """
     username = serializers.CharField(read_only=True)
-    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    first_name = serializers.CharField(
+        source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
     type = serializers.CharField(source='user.type', read_only=True)
     uploaded_at = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Profile
         fields = [
