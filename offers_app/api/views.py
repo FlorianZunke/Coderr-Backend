@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from offers_app.models import Offer
 from .serializers import OfferCreateSerializer, OfferReadSerializer
 from .permissions import IsBusinessUser
+from .paginations import OffersResultPagination
 
 
 class OffersListView(generics.ListCreateAPIView):
@@ -13,6 +14,7 @@ class OffersListView(generics.ListCreateAPIView):
     """
     queryset = Offer.objects.all()
     permission_classes = [IsAuthenticated, IsBusinessUser]
+    pagination_class = OffersResultPagination
 
     def get_serializer_class(self):
         """
