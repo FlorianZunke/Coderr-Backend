@@ -6,9 +6,5 @@ class SelfUserOrReadOnly(BasePermission):
     Custom permission to only allow owners of an object to edit it.
     """
 
-    def has_object_permission(self, request, view, obj):   
-        if request.method in SAFE_METHODS: 
-            return True
-        if request.method == "PATCH": 
-            return request.user == obj.user
-        return False
+    def has_object_permission(self, request, view, obj): 
+        return request.user == obj.user

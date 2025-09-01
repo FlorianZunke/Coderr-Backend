@@ -17,12 +17,20 @@ class ProfileViewSet(generics.RetrieveUpdateAPIView):
     """
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated, SelfUserOrReadOnly]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]
+        elif self.request.method in ['PUT', 'PATCH']:
+            return [SelfUserOrReadOnly()]
+        return super().get_permissions()
 
     def get_object(self):
         user_id = self.kwargs.get("pk")
         user = get_object_or_404(CustomUser, pk=user_id)
-        return get_object_or_404(Profile, user=user)
+        profile = get_object_or_404(Profile, user=user)
+        self.check_object_permissions(self.request, profile)
+        return profile
     
 
 class BusinessProfileListView(generics.ListAPIView):
