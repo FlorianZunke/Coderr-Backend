@@ -1,11 +1,15 @@
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 
 from offers_app.models import Offer
 from .serializers import OfferCreateSerializer, OfferReadSerializer
 from .permissions import IsBusinessUser
 from .paginations import OffersResultPagination
+from .filters import OfferFilter
+
 
 
 class OffersListView(generics.ListCreateAPIView):
@@ -15,6 +19,11 @@ class OffersListView(generics.ListCreateAPIView):
     queryset = Offer.objects.all()
     permission_classes = [IsAuthenticated, IsBusinessUser]
     pagination_class = OffersResultPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = OfferFilter
+    search_fields = ['title', 'description']
+    ordering_fields = ['updated_at', 'min_price']
+    ordering = ['updated_at', 'min_price'] #min_price funktioniert noch nciht beim ordering
 
     def get_serializer_class(self):
         """
@@ -29,6 +38,7 @@ class OffersListView(generics.ListCreateAPIView):
 
 
 class OffersDetailView(generics.RetrieveUpdateDestroyAPIView):
+    #Bei den Details muss noch eine URl anstelle von den ganzen Details eingefügt werden
     """
     View for retrieving, updating, and deleting offer details.
     """

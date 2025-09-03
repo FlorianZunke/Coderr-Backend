@@ -38,6 +38,7 @@ class OfferReadSerializer(serializers.ModelSerializer):
         model = Offer
         fields = [
             "id",
+            "user",
             "title",
             "image",
             "description",
