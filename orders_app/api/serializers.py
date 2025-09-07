@@ -1,10 +1,12 @@
-# filepath: d:\Weiterbildung\Projekte_Backend\Coderr-Backend\orders_app\api\serializers.py
 from rest_framework import serializers
 
-# Importiere dein Order-Modell
+
 from orders_app.models import Order
 
 class OrderListCreateSerializer(serializers.ModelSerializer):
+    offer_detail_id = serializers.IntegerField(write_only=True)
+    customer_user = serializers.PrimaryKeyRelatedField(read_only=True)
+    business_user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Order
         fields = [
@@ -20,4 +22,5 @@ class OrderListCreateSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
             "updated_at",
+            "offer_detail_id",
         ]
