@@ -7,7 +7,7 @@ from offers_app.models import OfferDetail
 from orders_app.models import Order
 
 from .permissions import IsCustomerUser
-from .serializers import OrderListCreateSerializer, OrderCreateFromOfferDetailSerializer
+from .serializers import OrderListCreateSerializer
 
 
 class OrdersListViewSet(ListCreateAPIView):
@@ -34,16 +34,18 @@ class OrdersListViewSet(ListCreateAPIView):
         offer_detail_id = serializer.validated_data.get("offer_detail_id")
         if not offer_detail_id:
             return Response(
-                {"detail": "'offer_detail_id' is required."},
+                {"detail": "'offer_detail_id' is required and must be provided in the request body."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Debug-Ausgabe zur Kontrolle
+        # print(f"OfferDetail ID received: {offer_detail_id}")
+
         try:
-            offer_detail = OfferDetail.objects.select_related(
-                "offer").get(pk=offer_detail_id)
+            offer_detail = OfferDetail.objects.select_related("offer").get(pk=offer_detail_id)
         except OfferDetail.DoesNotExist:
             return Response(
-                {"detail": "OfferDetail not found."},
+                {"detail": f"OfferDetail with id {offer_detail_id} not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
