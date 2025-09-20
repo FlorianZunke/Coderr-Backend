@@ -95,7 +95,7 @@ class OrderBusinessCountView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        business_user = get_object_or_404(CustomUser, pk=pk)
+        business_user = get_object_or_404(CustomUser, pk=pk, type="business")
 
         count = Order.objects.filter(
             business_user=business_user,
@@ -103,3 +103,20 @@ class OrderBusinessCountView(APIView):
         ).count()
 
         return Response({"order_count": count})
+    
+
+class OrderCompletedCountView(APIView):
+    """
+    View to return the count of completed orders for a given business user ID.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        business_user = get_object_or_404(CustomUser, pk=pk, type="business")
+
+        count = Order.objects.filter(
+            business_user=business_user,
+            status="completed"
+        ).count()
+
+        return Response({"completed_order_count": count})
