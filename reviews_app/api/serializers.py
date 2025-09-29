@@ -7,8 +7,18 @@ from reviews_app.models import Review
 
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    reviewer = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Review
-        fields = ["id", "reviewer", "business_user", "rating", "description", "created_at"]
-        read_only_fields = ["id", "reviewer", "created_at"]
+        fields = [
+            "id",
+            "business_user",
+            "reviewer",
+            "rating",
+            "description",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "reviewer", "created_at", "updated_at"]

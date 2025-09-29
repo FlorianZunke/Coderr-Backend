@@ -17,3 +17,14 @@ class IsReviewOwner(permissions.BasePermission):
 
         # Write permissions are only allowed to the owner of the review.
         return obj.reviewer == request.user
+
+
+class IsCustomerUser(permissions.BasePermission):
+    """
+    Only allow users with type 'customer' to create reviews.
+    """
+
+    def has_permission(self, request, view):
+        if request.method == "POST":
+            return request.user.is_authenticated and getattr(request.user, "type", None) == "customer"
+        return True
