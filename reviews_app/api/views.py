@@ -4,13 +4,27 @@ from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 from reviews_app.models import Review
-from .serializers import ReviewCreateSerializer
+from .serializers import ReviewCreateSerializer, ReviewDetailSerializer
 from .permissions import IsReviewOwner, IsCustomerUser
 
 class ReviewListCreateView(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewCreateSerializer
     permission_classes = [IsAuthenticated, IsCustomerUser]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        business_user_id = self.request.query_params.get("business_user_id")
+        reviewer_id = self.request.query_params.get("reviewer_id")
+        ordering = self.request.query_params.get("ordering")
+
+        if business_user_id:
+            queryset = queryset.filter(business_user_id=business_user_id)
+        if reviewer_id:
+            queryset = queryset.filter(reviewer_id=reviewer_id)
+        if ordering in ["updated_at", "rating"]:
+            queryset = queryset.order_by(ordering)
+        return queryset
 
     def perform_create(self, serializer):
         reviewer = self.request.user
@@ -34,5 +48,5 @@ class ReviewListCreateView(generics.ListCreateAPIView):
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
-    serializer_class = ReviewCreateSerializer
+    serializer_class = ReviewDetailSerializer
     permission_classes = [IsAuthenticated, IsReviewOwner]
