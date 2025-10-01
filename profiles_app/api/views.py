@@ -19,6 +19,9 @@ class ProfileViewSet(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
 
     def get_permissions(self):
+        """
+        Set permissions based on action.
+        """
         if self.request.method == 'GET':
             return [IsAuthenticated()]
         elif self.request.method in ['PUT', 'PATCH']:
@@ -26,6 +29,9 @@ class ProfileViewSet(generics.RetrieveUpdateAPIView):
         return super().get_permissions()
 
     def get_object(self):
+        """
+        Retrieve the profile for the specified user ID.
+        """
         user_id = self.kwargs.get("pk")
         user = get_object_or_404(CustomUser, pk=user_id)
         profile = get_object_or_404(Profile, user=user)

@@ -8,11 +8,17 @@ from .serializers import ReviewCreateSerializer, ReviewDetailSerializer
 from .permissions import IsReviewOwner, IsCustomerUser
 
 class ReviewListCreateView(generics.ListCreateAPIView):
+    """
+    View for listing and creating reviews.
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewCreateSerializer
     permission_classes = [IsAuthenticated, IsCustomerUser]
 
     def get_queryset(self):
+        """
+        Retrieve the list of reviews.
+        """
         queryset = super().get_queryset()
         business_user_id = self.request.query_params.get("business_user_id")
         reviewer_id = self.request.query_params.get("reviewer_id")
@@ -27,6 +33,9 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
+        """
+        Create a new review.
+        """
         reviewer = self.request.user
         business_user_id = serializer.validated_data["business_user"]
 
@@ -39,7 +48,6 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         if getattr(business_user_obj, "type", None) != "business":
             raise ValidationError("Das angegebene Profil ist kein Geschäftsprofil.")
 
-        # Prüfe, ob bereits eine Bewertung existiert
         if Review.objects.filter(reviewer=reviewer, business_user=business_user_obj).exists():
             raise ValidationError("Fehlerhafte Anfrage. Der Benutzer hat möglicherweise bereits eine Bewertung für das gleiche Geschäftsprofil abgegeben.")
 
@@ -47,6 +55,13 @@ class ReviewListCreateView(generics.ListCreateAPIView):
 
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    View for retrieving, updating, and deleting a review.
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewDetailSerializer
-    permission_classes = [IsAuthenticated, IsReviewOwner]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            return [IsAuthenticated(), IsReviewOwner()]
+        return super().get_permissions()

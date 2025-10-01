@@ -8,6 +8,9 @@ from reviews_app.models import Review
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating and reading reviews.
+    """
     reviewer = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -25,6 +28,9 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for retrieving, updating, and deleting reviews.
+    """
     reviewer = serializers.PrimaryKeyRelatedField(read_only=True)
     business_user = serializers.PrimaryKeyRelatedField(read_only=True)
     rating = serializers.IntegerField(required=False)
@@ -44,7 +50,9 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "business_user", "reviewer", "created_at", "updated_at"]
 
     def validate(self, attrs):
-        # Nur rating und description dürfen geändert werden
+        """
+        Only 'rating' and 'description' fields can be updated.
+        """
         allowed = {"rating", "description"}
         if set(attrs.keys()) - allowed:
             raise serializers.ValidationError("Nur die Felder 'rating' und 'description' dürfen geändert werden.")

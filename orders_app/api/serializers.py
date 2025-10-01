@@ -4,6 +4,9 @@ from rest_framework import serializers
 from orders_app.models import Order
 
 class OrderListCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for listing and creating orders.
+    """
     offer_detail_id = serializers.IntegerField(write_only=True)
     customer_user = serializers.PrimaryKeyRelatedField(read_only=True)
     business_user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -37,6 +40,9 @@ class OrderListCreateSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for order details and updates.
+    """
     customer_user = serializers.PrimaryKeyRelatedField(read_only=True)
     business_user = serializers.PrimaryKeyRelatedField(read_only=True)
     title = serializers.CharField(read_only=True)
@@ -78,7 +84,6 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        # Beim Update darf nur das Feld 'status' übergeben werden
         if set(attrs.keys()) - {"status"}:
             raise serializers.ValidationError("Nur das Feld 'status' darf geändert werden.")
         return attrs

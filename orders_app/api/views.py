@@ -14,6 +14,9 @@ from .serializers import OrderListCreateSerializer, OrderDetailSerializer
 
 
 class OrdersListViewSet(ListCreateAPIView):
+    """
+    View for listing and creating orders.
+    """
     queryset = Order.objects.all()
     serializer_class = OrderListCreateSerializer
 
@@ -23,6 +26,9 @@ class OrdersListViewSet(ListCreateAPIView):
         return [IsAuthenticated(), IsCustomerUser()]
 
     def get(self, request):
+        """
+        List orders for the authenticated user, either as a customer or business user.
+        """
         orders_customer = Order.objects.filter(customer_user=request.user)
         orders_business = Order.objects.filter(business_user=request.user)
         orders = orders_customer | orders_business
@@ -31,6 +37,9 @@ class OrdersListViewSet(ListCreateAPIView):
         return Response(serializer.data)
 
     def post(self, request):
+        """
+        Create a new order based on the provided offer_detail_id.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -68,6 +77,9 @@ class OrdersListViewSet(ListCreateAPIView):
 
 
 class OrderDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
+    """
+    View for retrieving, updating, and deleting an order.
+    """
     queryset = Order.objects.all()
     serializer_class = OrderDetailSerializer
     permission_classes = [IsAuthenticated, IsBusinessUser]
@@ -79,6 +91,9 @@ class OrderDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
             return [IsStaffUser()]
 
     def update(self, request, *args, **kwargs):
+        """
+        Update only the 'status' field of the order.
+        """
         allowed_fields = {"status"}
         if set(request.data.keys()) - allowed_fields:
             return Response(

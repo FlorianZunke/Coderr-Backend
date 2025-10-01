@@ -4,11 +4,6 @@ from profiles_app.models import Profile
 from auth_app.models import CustomUser
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CustomUser
-#         fields = ["id", "username", "email", "type"]
-
 class ProfileSerializer(serializers.ModelSerializer):
     """
     Serializer for user profiles.
