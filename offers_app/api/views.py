@@ -22,14 +22,18 @@ class OffersListView(generics.ListCreateAPIView):
             min_price=Min("details__price"),
             min_delivery_time=Min("details__delivery_time_in_days")
         )
-
-    permission_classes = [IsAuthenticated, IsBusinessUser]
+    
     pagination_class = OffersResultPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = OfferFilter
     search_fields = ['title', 'description']
     ordering_fields = ['updated_at', 'min_price']
-    ordering = ['updated_at', 'min_price']         
+    ordering = ['updated_at', 'min_price']
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        return [IsBusinessUser()]
 
     def get_serializer_class(self):
         """

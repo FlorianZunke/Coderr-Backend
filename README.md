@@ -20,28 +20,70 @@ It is structured into three main modules:
 
 ## Installation
 
+### Windows
+
 1. **Clone the repository**
    ```bash
    git clone <REPO-URL>
    cd Coderr-Backend
    ```
 
-2. **Install dependencies**
+2. **Create and activate a virtual environment**
+   ```bash
+   python -m venv env
+   env/Scripts/activate
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Apply migrations**
+4. **Apply migrations**
    ```bash
    python manage.py migrate
    ```
 
-4. **Create a superuser (optional)**
+5. **Create a superuser (optional)**
    ```bash
    python manage.py createsuperuser
    ```
 
-5. **Start the server**
+6. **Start the server**
+   ```bash
+   python manage.py runserver
+   ```
+
+### macOS / Linux
+
+1. **Clone the repository**
+   ```bash
+   git clone <REPO-URL>
+   cd Coderr-Backend
+   ```
+
+2. **Create and activate a virtual environment**
+   ```bash
+   python3 -m venv env
+   source env/bin/activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Apply migrations**
+   ```bash
+   python manage.py migrate
+   ```
+
+5. **Create a superuser (optional)**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+6. **Start the server**
    ```bash
    python manage.py runserver
    ```

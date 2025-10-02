@@ -1,4 +1,3 @@
-
 from rest_framework import serializers
 from profiles_app.models import Profile
 from auth_app.models import CustomUser
@@ -8,12 +7,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
     Serializer for user profiles.
     """
-    username = serializers.CharField(read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
     type = serializers.CharField(source='user.type', read_only=True)
     email = serializers.EmailField(source='user.email')
-    created_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(source='user.created_at', read_only=True)
 
     class Meta:
         model = Profile
@@ -43,7 +42,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             user.last_name = user_data.get('last_name', user.last_name)
             user.email = user_data.get('email', user.email)
             user.save()
-            instance.save()
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
         return instance
 
 
@@ -51,7 +52,7 @@ class BusinessSerializer(serializers.ModelSerializer):
     """
     Serializer for business profiles.
     """
-    username = serializers.CharField(read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(
         source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
@@ -77,7 +78,7 @@ class CustomerSerializer(serializers.ModelSerializer):
     """
     Serializer for customer profiles.
     """
-    username = serializers.CharField(read_only=True)
+    username = serializers.CharField(source='user.username',read_only=True)
     first_name = serializers.CharField(
         source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
