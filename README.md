@@ -2,16 +2,21 @@
 
 ## Overview
 
-This project is a Django REST Framework backend for a platform where customers can view, order, and review offers from business partners.  
-It includes modules for offers (`offers_app`), orders (`orders_app`), and reviews (`reviews_app`).
+Coderr-Backend is a Django REST Framework backend for a platform where customers can view, order, and review offers from business partners.  
+It is structured into three main modules:  
+- **Offers** (`offers_app`): Manage business offers and their details  
+- **Orders** (`orders_app`): Customers can place orders based on offer details  
+- **Reviews** (`reviews_app`): Customers can review business partners after an order
 
 ## Features
 
-- **Offers:** Business partners can create offers with various details.
-- **Orders:** Customers can place orders based on offer details.
-- **Reviews:** Customers can review business partners after completing an order.
-- **Roles:** Distinction between customers and business partners.
-- **Permissions:** Only authorized users can perform certain actions.
+- **Role-based access:** Customers and business partners have different permissions and capabilities.
+- **Custom user model:** Fully supports a custom user model via `settings.AUTH_USER_MODEL`.
+- **Offer management:** Business partners can create, update, and list offers with multiple details.
+- **Order workflow:** Customers can create orders from offer details; business partners manage order status.
+- **Review system:** Customers can review business partners (one review per business profile).
+- **Filtering & sorting:** API supports filtering and ordering for offers, orders, and reviews.
+- **Statistics endpoint:** General statistics about the platform (number of reviews, average rating, etc.).
 
 ## Installation
 
@@ -41,11 +46,11 @@ It includes modules for offers (`offers_app`), orders (`orders_app`), and review
    python manage.py runserver
    ```
 
-## API Endpoints (Excerpt)
+## API Endpoints (Selection)
 
 ### Offers (`offers_app`)
 - `GET /api/offers/`  
-  List all offers (with filtering and sorting options).
+  List all offers (supports filtering and ordering).
 - `POST /api/offers/`  
   Create a new offer (business users only).
 - `GET /api/offers/<id>/`  
@@ -55,37 +60,44 @@ It includes modules for offers (`offers_app`), orders (`orders_app`), and review
 
 ### Orders (`orders_app`)
 - `GET /api/orders/`  
-  All orders where the logged-in user is either the customer or the business partner.
+  List all orders where the logged-in user is either the customer or the business partner.
 - `POST /api/orders/`  
   Create a new order based on an offer detail (`offer_detail_id` in the body).
 - `PATCH /api/orders/<id>/`  
   Change the status of an order (business users only).
 
 ### Reviews (`reviews_app`)
-- `GET /api/reviews/`  
-  List reviews with filtering and sorting (`business_user_id`, `reviewer_id`, `ordering`).
+- `GET /api/reviews/?business_user_id=&reviewer_id=&ordering=`  
+  List reviews, filterable by business user, reviewer, and orderable by `updated_at` or `rating`.
 - `POST /api/reviews/`  
   Create a new review (customers only, one review per business profile).
 - `PATCH /api/reviews/<id>/`  
   Only `rating` and `description` can be changed (by the creator only).
+
+### Statistics (`core`)
+- `GET /api/base-info/`  
+  Returns general statistics: review count, average rating, business profile count, offer count.
 
 ## Roles & Permissions
 
 - **Customer:** Can place orders and write reviews.
 - **Business partner:** Can create offers and manage orders.
 - **Staff:** Can view and manage all data (optional).
+- Permissions are enforced via custom permission classes in each app.
 
 ## Notes
 
-- Authentication is required for all endpoints.
-- User models are referenced via `settings.AUTH_USER_MODEL` and support custom user models.
-- The main permissions are defined in each app under `api/permissions.py`.
+- All endpoints require authentication unless otherwise noted.
+- The user model is referenced via `settings.AUTH_USER_MODEL` and supports custom user models.
+- Main permissions are defined in each app under `api/permissions.py`.
+- The project uses Django 4.x+, Django REST Framework, and Python 3.10+.
 
 ## Development
 
+- Python 3.10+
 - Django 4.x+
 - Django REST Framework
-- Python 3.10+
+- SQLite (default, can be changed)
 
 ## License
 
