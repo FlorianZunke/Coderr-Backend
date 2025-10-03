@@ -6,7 +6,7 @@ from django.db.models import Min
 
 
 from offers_app.models import Offer, OfferDetail
-from .serializers import OfferCreateSerializer, OfferReadSerializer, OfferReadNoUserDetailsSerializer, OfferDetailReadSerializer
+from .serializers import OfferCreateSerializer, OfferReadSerializer, OfferReadNoUserDetailsSerializer, OfferDetailReadSerializer, OfferUpdateSerializer
 from .permissions import IsBusinessUser, IsOfferOwner
 from .paginations import OffersResultPagination
 from .filters import OfferFilter
@@ -33,7 +33,7 @@ class OffersListView(generics.ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == 'GET':
             return []
-        return [IsBusinessUser()]
+        return [IsAuthenticated() ,IsBusinessUser()]
 
     def get_serializer_class(self):
         """
@@ -68,7 +68,7 @@ class OffersDetailView(generics.RetrieveUpdateDestroyAPIView):
         Get the serializer class based on the request method.
         """
         if self.request.method in ['PUT', 'PATCH']:
-            return OfferCreateSerializer
+            return OfferUpdateSerializer
         return OfferReadNoUserDetailsSerializer
     
 

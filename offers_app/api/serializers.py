@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import NotFound
 
 from offers_app.models import Offer, OfferDetail
 
@@ -98,7 +99,7 @@ class OfferDetailWriteSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = OfferDetail
-        fields = ["title", "revisions", "delivery_time_in_days",
+        fields = ["id","title", "revisions", "delivery_time_in_days",
                   "price", "features", "offer_type"]
 
 
@@ -110,7 +111,7 @@ class OfferCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ["title", "description", "image", "details"]
+        fields = ["id", "title", "description", "image", "details"]
 
     def create(self, validated_data):
         """
@@ -124,31 +125,40 @@ class OfferCreateSerializer(serializers.ModelSerializer):
 
         return offer
 
+
+class OfferUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for updating offers and their details.
+    """
+    details = OfferDetailWriteSerializer(many=True, required=False)
+
+    class Meta:
+        model = Offer
+        fields = ["id", "title", "description", "image", "details"]
+
     def update(self, instance, validated_data):
-        """
-        Update offer and its details.
-        """
-        details_data = validated_data.pop("details", None)
+        details_data = validated_data.pop('details', [])
+        
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        if details_data is not None:
-            """
-            Mapping: (id, offer_type) -> OfferDetail
-            """
-            existing_details = {(detail.id, detail.offer_type): detail for detail in instance.details.all()}
-            sent_ids_types = set()
-            for detail_data in details_data:
-                detail_id = detail_data.get("id")
-                offer_type = detail_data.get("offer_type")
-                sent_ids_types.add((detail_id, offer_type))
-                if detail_id and (detail_id, offer_type) in existing_details:
-                    detail_instance = existing_details[(detail_id, offer_type)]
-                    for attr, value in detail_data.items():
-                        if attr != "id":
-                            setattr(detail_instance, attr, value)
-                    detail_instance.save()
-                else:
-                    OfferDetail.objects.create(offer=instance, **detail_data)
+        for detail_data in details_data:
+            offer_type = detail_data.get("offer_type")
+            if not offer_type:
+                raise serializers.ValidationError(
+                    {"details": "Jedes Detail muss ein 'offer_type' enthalten."}
+                )
+
+            try:
+                detail = instance.details.get(offer_type=offer_type)
+            except OfferDetail.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"details": f"OfferDetail mit offer_type '{offer_type}' existiert nicht."}
+                )
+
+            for attr, value in detail_data.items():
+                setattr(detail, attr, value)
+            detail.save()
+
         return instance
