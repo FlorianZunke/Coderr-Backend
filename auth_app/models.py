@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class CustomUser(AbstractUser):
+    """
+    Custom user model extending AbstractUser to include user type.
+    """
     USER_TYPES = [
         ('customer', 'Customer'),
         ('business', 'Business'),

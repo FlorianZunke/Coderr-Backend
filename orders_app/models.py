@@ -2,6 +2,9 @@ from django.db import models
 from django.conf import settings
 
 class Order(models.Model):
+    """
+    Model representing an order placed by a customer to a business user.
+    """
     OFFER_TYPE_CHOICES = [
         ("basic", "Basic"),
         ("standard", "Standard"),

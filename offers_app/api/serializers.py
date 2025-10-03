@@ -101,6 +101,13 @@ class OfferDetailWriteSerializer(serializers.ModelSerializer):
         model = OfferDetail
         fields = ["id","title", "revisions", "delivery_time_in_days",
                   "price", "features", "offer_type"]
+        
+    def to_internal_value(self, data):
+        allowed = set(self.fields.keys())
+        extra = set(data.keys()) - allowed
+        if extra:
+            raise serializers.ValidationError(f"Unerwartete Felder: {', '.join(extra)}")
+        return super().to_internal_value(data)
 
 
 class OfferCreateSerializer(serializers.ModelSerializer):
@@ -130,7 +137,11 @@ class OfferUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer for updating offers and their details.
     """
-    details = OfferDetailWriteSerializer(many=True, required=False)
+    details = OfferDetailWriteSerializer(many=True, required=True)
+    title = serializers.CharField(write_only=True, required=False)
+    description = serializers.CharField(write_only=True, required=False)
+    image = serializers.ImageField(write_only=True, required=False)
+
 
     class Meta:
         model = Offer

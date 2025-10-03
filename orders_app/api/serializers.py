@@ -51,7 +51,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     features = serializers.JSONField(read_only=True)
     offer_type = serializers.CharField(read_only=True)
-    status = serializers.CharField(required=True)
+    status = serializers.ChoiceField(choices=Order.STATUS_CHOICES, required=True)
 
     class Meta:
         model = Order

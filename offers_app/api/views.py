@@ -3,15 +3,11 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Min
 
-
-
 from offers_app.models import Offer, OfferDetail
 from .serializers import OfferCreateSerializer, OfferReadSerializer, OfferReadNoUserDetailsSerializer, OfferDetailReadSerializer, OfferUpdateSerializer
 from .permissions import IsBusinessUser, IsOfferOwner
 from .paginations import OffersResultPagination
 from .filters import OfferFilter
-
-
 
 class OffersListView(generics.ListCreateAPIView):
     """
@@ -31,6 +27,9 @@ class OffersListView(generics.ListCreateAPIView):
     ordering = ['updated_at', 'min_price']
 
     def get_permissions(self):
+        """
+        Get permissions based on the request method.
+        """
         if self.request.method == 'GET':
             return []
         return [IsAuthenticated() ,IsBusinessUser()]
@@ -53,12 +52,17 @@ class OffersDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
 
     def get_queryset(self):
+        """
+        Get the queryset with annotated minimum price and delivery time."""
         return Offer.objects.annotate(
             min_price=Min("details__price"),
             min_delivery_time=Min("details__delivery_time_in_days")
         )
 
     def get_permissions(self):
+        """
+        Get permissions based on the request method.
+        """
         if self.request.method == 'GET':
             return [IsAuthenticated()]
         return [IsAuthenticated(), IsOfferOwner()]
@@ -73,6 +77,8 @@ class OffersDetailView(generics.RetrieveUpdateDestroyAPIView):
     
 
 class OfferDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    View for retrieving, updating, and deleting offer details."""
     queryset = OfferDetail.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = OfferDetailReadSerializer

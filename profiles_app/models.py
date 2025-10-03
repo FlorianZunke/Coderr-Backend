@@ -4,6 +4,9 @@ from auth_app.models import CustomUser
     
 
 class Profile(models.Model):
+    """
+    Model representing a user profile with additional information.
+    """
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     file = models.FileField(upload_to="profiles/", blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, default="")

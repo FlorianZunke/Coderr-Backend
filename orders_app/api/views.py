@@ -89,6 +89,7 @@ class OrderDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
             return [IsAuthenticated(), IsBusinessUser()]
         if self.request.method == 'DELETE':
             return [IsStaffUser()]
+        return super().get_permissions()
 
     def update(self, request, *args, **kwargs):
         """

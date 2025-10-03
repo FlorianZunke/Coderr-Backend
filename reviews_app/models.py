@@ -4,6 +4,8 @@ from django.conf import settings
 
 
 class Review(models.Model):
+    """
+    Model representing a review made by a user for a business user."""
     reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews_made'
     )

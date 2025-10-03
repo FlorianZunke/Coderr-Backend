@@ -17,8 +17,7 @@ class IsBusinessUser(BasePermission):
     """
     Custom permission to only allow business users to access certain views.
     """
-
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         if request.method in ["PATCH", "DELETE"]:
             return request.user.is_authenticated and getattr(request.user, "type", None) == "business"
         return False

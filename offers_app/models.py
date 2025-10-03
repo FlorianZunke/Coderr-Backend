@@ -2,6 +2,9 @@ from django.db import models
 from django.conf import settings
 
 class Offer(models.Model):
+    """ 
+    Model representing an offer made by a user.
+    """
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.FileField(upload_to='offers/images/', null=True, blank=True)
@@ -14,6 +17,9 @@ class Offer(models.Model):
 
 
 class OfferDetail(models.Model):
+    """
+    Model representing detailed information about an offer.
+    """
     OFFER_TYPE = [
         ("basic", "Basic"),
         ("standard", "Standard"),
