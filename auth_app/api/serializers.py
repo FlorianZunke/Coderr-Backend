@@ -65,7 +65,7 @@ class CustomLoginSerializer(serializers.Serializer):
         """
         user = authenticate(username=data['username'], password=data['password'])
         if user is None:
-            raise serializers.ValidationError("Invalid credentials")
+            raise serializers.ValidationError({'error': 'Invalid credentials'})
         data['user'] = user
         return data
 
