@@ -35,7 +35,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         repeated_pw = self.validated_data['repeated_password']
 
         if pw != repeated_pw:
-            raise serializers.ValidationError("Passwords do not match.")
+            raise serializers.ValidationError({'error':"Passwords do not match."})
         
         if CustomUser.objects.filter(email=self.validated_data['email']).exists():
             raise serializers.ValidationError({'error': 'Email already exists'})
