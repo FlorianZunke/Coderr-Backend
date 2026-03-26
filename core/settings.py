@@ -30,6 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'coderr.florian-zunke.de', 'florian-zunke.developerakademie.org']
 
+CSRF_TRUSTED_ORIGINS = ['https://florian-zunke.developerakademie.org']
+
 
 # Application definition
 
