@@ -137,15 +137,15 @@ class OfferUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer for updating offers and their details.
     """
+    title = serializers.CharField(required=False)
+    image = serializers.ImageField(required=False)
+    description = serializers.CharField(required=False)
     details = OfferDetailWriteSerializer(many=True, required=True)
-    title = serializers.CharField(write_only=True, required=False)
-    description = serializers.CharField(write_only=True, required=False)
-    image = serializers.ImageField(write_only=True, required=False)
-
+    
 
     class Meta:
         model = Offer
-        fields = ["id", "title", "description", "image", "details"]
+        fields = ["id", "title", "image", "description", "details"]
 
     def update(self, instance, validated_data):
         details_data = validated_data.pop('details', [])

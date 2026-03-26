@@ -35,7 +35,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         repeated_pw = self.validated_data['repeated_password']
 
         if pw != repeated_pw:
-            raise serializers.ValidationError("Passwords do not match.")
+            raise serializers.ValidationError({'error': 'Passwords do not match.'})
         
         if CustomUser.objects.filter(email=self.validated_data['email']).exists():
             raise serializers.ValidationError({'error': 'Email already exists'})
@@ -65,7 +65,7 @@ class CustomLoginSerializer(serializers.Serializer):
         """
         user = authenticate(username=data['username'], password=data['password'])
         if user is None:
-            raise serializers.ValidationError("Invalid credentials")
+            raise serializers.ValidationError({'error': 'Invalid credentials'})
         data['user'] = user
         return data
 
